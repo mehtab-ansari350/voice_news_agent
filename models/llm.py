@@ -1,4 +1,40 @@
 from ollama import chat
+import ollama
+
+def answer_question(context: str, question: str) -> str:
+    """
+    Answer a question using the provided news context.
+    """
+
+    prompt = f"""
+You are a professional news assistant.
+
+Use ONLY the news context below.
+
+If the answer is not present in the context,
+say:
+"I could not find that information in today's news."
+
+NEWS CONTEXT:
+{context}
+
+QUESTION:
+{question}
+
+ANSWER:
+"""
+
+    response = ollama.chat(
+        model="llama3.2:3b",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+    )
+
+    return response["message"]["content"]
 
 
 def summarize_article(article_text):
