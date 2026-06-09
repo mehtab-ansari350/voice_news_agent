@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# SQLite
+*.db
+
+# Temporary files
+temp/
+tmp/
+
+# NLTK
+nltk_data/
+
+# Python build artifacts
+build/
+dist/
+*.egg-info/
+
+# Ollama generated files (if any local outputs are stored)
+data/articles/
+data/summaries/
