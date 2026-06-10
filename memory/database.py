@@ -42,10 +42,19 @@ def initialize_database() -> None:
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """
+    conversation_query = """
+    CREATE TABLE IF NOT EXISTS conversation_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        question TEXT NOT NULL,
+        answer TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """
 
     with get_connection() as connection:
         cursor = connection.cursor()
         cursor.execute(query)
+        cursor.execute(conversation_query)
         connection.commit()
 
 
@@ -114,6 +123,67 @@ def get_all_articles() -> list[dict[str, Any]]:
 
         cursor = connection.cursor()
         cursor.execute(query)
+
+        rows = cursor.fetchall()
+
+        return [dict(row) for row in rows]
+
+def save_conversation(
+    question: str,
+    answer: str,
+) -> None:
+    """
+    Save a conversation turn.
+    """
+
+    query = """
+    INSERT INTO conversation_history (
+        question,
+        answer
+    )
+    VALUES (?, ?)
+    """
+
+    with get_connection() as connection:
+
+        cursor = connection.cursor()
+
+        cursor.execute(
+            query,
+            (
+                question,
+                answer,
+            ),
+        )
+
+        connection.commit()
+
+def get_recent_conversations(
+    limit: int = 5,
+) -> list[dict]:
+    """
+    Retrieve recent conversations.
+    """
+
+    query = """
+    SELECT
+        question,
+        answer
+    FROM conversation_history
+    ORDER BY id DESC
+    LIMIT ?
+    """
+
+    with get_connection() as connection:
+
+        connection.row_factory = sqlite3.Row
+
+        cursor = connection.cursor()
+
+        cursor.execute(
+            query,
+            (limit,),
+        )
 
         rows = cursor.fetchall()
 

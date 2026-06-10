@@ -4,12 +4,20 @@ News Question Answering System.
 Responsibilities:
 - Receive user questions
 - Retrieve relevant news articles
-- Build context
+- Build news context
+- Build conversation context
 - Generate answers using Llama
+- Save conversation history
 """
 
 from ai.retriever import retrieve_relevant_articles
+
 from models.llm import answer_question
+
+from memory.database import (
+    get_recent_conversations,
+    save_conversation,
+)
 
 
 def build_news_context(question: str) -> str:
@@ -48,9 +56,42 @@ SUMMARY:
     return "\n\n".join(context_parts)
 
 
+def build_conversation_context() -> str:
+    """
+    Build conversation context from SQLite history.
+
+    Returns:
+        Formatted conversation history.
+    """
+
+    conversations = get_recent_conversations(
+        limit=5
+    )
+
+    if not conversations:
+        return ""
+
+    parts = []
+
+    # Oldest -> Newest
+    for conversation in reversed(conversations):
+
+        parts.append(
+            f"""
+USER:
+{conversation['question']}
+
+ASSISTANT:
+{conversation['answer']}
+"""
+        )
+
+    return "\n".join(parts)
+
+
 def main() -> None:
     """
-    Start the news QA system.
+    Start the News QA System.
     """
 
     print("=" * 80)
@@ -64,21 +105,36 @@ def main() -> None:
         ).strip()
 
         if question.lower() == "exit":
+            print("\nGoodbye!")
             break
 
-        context = build_news_context(question)
+        news_context = build_news_context(
+            question=question
+        )
 
-        if not context:
+        if not news_context:
+
             print(
                 "\nI could not find any relevant news article."
             )
+
             continue
 
         try:
 
+            conversation_context = (
+                build_conversation_context()
+            )
+
             answer = answer_question(
-                context=context,
+                news_context=news_context,
+                conversation_context=conversation_context,
                 question=question,
+            )
+
+            save_conversation(
+                question=question,
+                answer=answer,
             )
 
             print("\nANSWER:")

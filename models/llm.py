@@ -1,24 +1,35 @@
 from ollama import chat
 import ollama
 
-def answer_question(context: str, question: str) -> str:
+def answer_question(
+    news_context: str,
+    conversation_context: str,
+    question: str,
+) -> str:
     """
-    Answer a question using the provided news context.
+    Answer a question using:
+    - News context
+    - Conversation history
     """
 
     prompt = f"""
 You are a professional news assistant.
 
-Use ONLY the news context below.
+Use the conversation history when relevant.
 
-If the answer is not present in the context,
-say:
+Use ONLY the provided news context.
+
+If the answer is not available, say:
+
 "I could not find that information in today's news."
 
-NEWS CONTEXT:
-{context}
+CONVERSATION HISTORY:
+{conversation_context}
 
-QUESTION:
+NEWS CONTEXT:
+{news_context}
+
+CURRENT QUESTION:
 {question}
 
 ANSWER:
