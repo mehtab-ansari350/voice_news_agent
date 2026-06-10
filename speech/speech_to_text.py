@@ -1,64 +1,35 @@
 """
 Speech-to-Text using Whisper.
 
-Records audio from microphone,
-saves it temporarily,
-then transcribes it using Whisper.
+Responsibilities:
+- Record audio
+- Convert speech to text
 """
 
-import tempfile
-
 import whisper
-import sounddevice as sd
-import soundfile as sf
+
+from speech.audio_recorder import (
+    record_until_silence,
+)
 
 
-# Load model once during startup
+# Load model once
 model = whisper.load_model("base")
 
 
-def listen_and_transcribe(
-    duration: int = 5,
-) -> str:
+def listen_and_transcribe() -> str:
     """
     Record audio and convert to text.
-
-    Args:
-        duration: Recording length in seconds.
-
-    Returns:
-        Transcribed text.
     """
 
-    sample_rate = 16000
-
-    print("\nListening...")
-
-    audio = sd.rec(
-        int(duration * sample_rate),
-        samplerate=sample_rate,
-        channels=1,
-        dtype="float32",
-    )
-
-    sd.wait()
+    audio_file = record_until_silence()
 
     print("Processing speech...")
 
-    with tempfile.NamedTemporaryFile(
-        suffix=".wav",
-        delete=False,
-    ) as temp_file:
-
-        sf.write(
-            temp_file.name,
-            audio,
-            sample_rate,
-        )
-
-        result = model.transcribe(
-            temp_file.name
-        )
+    result = model.transcribe(
+        audio_file,
+        fp16=False,
+    )
 
     text = result["text"].strip()
 
