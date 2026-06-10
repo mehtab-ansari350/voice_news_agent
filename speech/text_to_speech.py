@@ -8,14 +8,12 @@ Responsibilities:
 
 import pyttsx3
 
-
 # Initialize engine once
 engine = pyttsx3.init()
 
 # Speech settings
 engine.setProperty("rate", 180)
 engine.setProperty("volume", 1.0)
-
 
 def speak(text: str) -> None:
     """
@@ -31,7 +29,6 @@ def speak(text: str) -> None:
     engine.say(text)
     engine.runAndWait()
 
-
 def main() -> None:
     """
     Test TTS.
@@ -40,7 +37,6 @@ def main() -> None:
     speak(
         "Hello Mehtab. Your voice assistant is working."
     )
-
 
 if __name__ == "__main__":
     main()
