@@ -36,3 +36,8 @@ dist/
 # Ollama generated files (if any local outputs are stored)
 data/articles/
 data/summaries/
+
+*.wav
+*.db
+__pycache__/
+venv/

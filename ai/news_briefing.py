@@ -3,7 +3,7 @@ Generate a spoken news briefing.
 """
 
 from memory.database import get_all_articles
-
+from memory.briefing_memory import save_briefing
 
 def generate_news_briefing(
     limit: int = 5,
@@ -14,6 +14,13 @@ def generate_news_briefing(
 
     articles = get_all_articles()
 
+    if not articles:
+        return "I could not find any news articles."
+
+    save_briefing(
+        articles[:limit]
+    )
+    
     if not articles:
 
         return (
