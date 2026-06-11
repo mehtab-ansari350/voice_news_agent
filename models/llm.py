@@ -1,6 +1,7 @@
 from ollama import chat
 import ollama
 
+
 def answer_question(
     news_context: str,
     conversation_context: str,
@@ -30,6 +31,45 @@ NEWS CONTEXT:
 {news_context}
 
 CURRENT QUESTION:
+{question}
+
+ANSWER:
+"""
+
+    response = ollama.chat(
+        model="llama3.2:3b",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+    )
+
+    return response["message"]["content"]
+
+
+def answer_from_article(
+    article,
+    question,
+) -> str:
+    """
+    Answer follow-up questions using
+    the currently selected article.
+    """
+
+    prompt = f"""
+You are a professional news assistant.
+
+Use ONLY the article below.
+
+ARTICLE TITLE:
+{article['title']}
+
+ARTICLE SUMMARY:
+{article['summary']}
+
+QUESTION:
 {question}
 
 ANSWER:

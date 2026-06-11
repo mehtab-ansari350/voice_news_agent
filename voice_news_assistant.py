@@ -40,6 +40,15 @@ from models.llm import (
     answer_question,
 )
 
+from memory.article_memory import (
+    set_current_article,
+    get_current_article,
+)
+
+from models.llm import (
+    answer_from_article,
+)
+
 
 def handle_question(
     question: str,
@@ -145,17 +154,19 @@ def main() -> None:
 
         else:
 
-            # Check if user refers to
-            # first, second, third, fourth, fifth story
-            article = (
-                get_article_from_reference(
-                    user_input
-                )
+            # Try selecting a new article first
+            article = get_article_from_reference(
+                user_input
             )
 
             if article:
 
-                response = f"""
+                # Save as active article
+                set_current_article(
+                    article
+                )
+
+                answer = f"""
 Title:
 {article['title']}
 
@@ -164,11 +175,33 @@ Summary:
 {article['summary']}
 """
 
+                print("\nASSISTANT:")
+                print(answer)
+
+                speak(answer)
+
+                continue
+
+            # No new article selected
+            current_article = (
+                get_current_article()
+            )
+
+            if current_article:
+
+                response = (
+                    answer_from_article(
+                        article=current_article,
+                        question=user_input,
+                    )
+                )
+
             else:
 
                 response = handle_question(
                     user_input
                 )
+               
 
         print("\nASSISTANT:")
         print(response)
