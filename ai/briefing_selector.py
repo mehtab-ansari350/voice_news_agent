@@ -82,16 +82,24 @@ def get_article_from_reference(
         if str(number) in text:
             return articles[number - 1]
 
-    # Title matching
+    # Smart title matching
+
     for article in articles:
 
         title = article["title"].lower()
 
-        title_words = title.split()
+        if title in text:
+            return article
 
-        for word in title_words:
+        important_words = [
+            word
+            for word in title.split()
+            if len(word) > 5
+        ]
 
-            if len(word) > 4 and word in text:
+        for word in important_words:
+
+            if word in text:
                 return article
-
+            
     return None

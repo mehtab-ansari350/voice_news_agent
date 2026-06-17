@@ -15,8 +15,8 @@ from models.llm import summarize_article
 from memory.database import (
     initialize_database,
     save_article,
+    clear_articles,
 )
-
 
 def process_news(limit: int = 5) -> list[dict]:
     """
@@ -31,6 +31,8 @@ def process_news(limit: int = 5) -> list[dict]:
 
     processed_articles: list[dict] = []
 
+    clear_articles()
+    
     news_items = get_latest_news(limit=limit)
 
     if not news_items:

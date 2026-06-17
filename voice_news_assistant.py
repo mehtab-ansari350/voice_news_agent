@@ -100,6 +100,18 @@ def main() -> None:
 
     print("\nAssistant Ready.")
 
+    welcome_message = (
+        "Hello Boss. "
+        "I am here to help you. "
+        "You can ask for today's news "
+    
+    )
+
+    print("\nASSISTANT:")
+    print(welcome_message)
+
+    speak(welcome_message)
+
     while True:
 
         print(
@@ -173,9 +185,11 @@ Title:
 Summary:
 
 {article['summary']}
+Would you like me to explain any part of this story in more detail?
 """
 
                 print("\nASSISTANT:")
+                speak("Let me check that for you.")
                 print(answer)
 
                 speak(answer)

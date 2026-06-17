@@ -189,6 +189,23 @@ def get_recent_conversations(
 
         return [dict(row) for row in rows]
 
+def clear_articles() -> None:
+    """
+    Delete all old news articles.
+    """
+
+    query = """
+    DELETE FROM news_articles
+    """
+
+    with get_connection() as connection:
+
+        cursor = connection.cursor()
+
+        cursor.execute(query)
+
+        connection.commit()
+
 
 if __name__ == "__main__":
 

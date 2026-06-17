@@ -61,7 +61,19 @@ def answer_from_article(
     prompt = f"""
 You are a professional news assistant.
 
-Use ONLY the article below.
+Rules:
+
+1. Answer ONLY the question.
+2. Never repeat the full article.
+3. Never repeat the article summary.
+4. Use the article only as context.
+5. Keep answers short and direct.
+6. If the answer is not explicitly mentioned in the article, say:
+   "The article does not provide that information."
+
+7. Answer in 1-3 sentences maximum.
+
+8. Do not invent facts.
 
 ARTICLE TITLE:
 {article['title']}

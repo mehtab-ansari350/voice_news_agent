@@ -39,23 +39,38 @@ def transcribe_audio(
     model,
     audio_file: str,
 ) -> str:
-    """
-    Transcribe an audio file.
 
-    Args:
-        model: Loaded Whisper model.
-        audio_file: Audio file path.
 
-    Returns:
-        Transcribed text.
-    """
+    # File exists?
+    if not os.path.exists(audio_file):
+        return ""
 
-    result = model.transcribe(
-        audio_file,
-        fp16=False,
-    )
+    try:
+        audio_data, sample_rate = sf.read(audio_file)
 
-    return result["text"].strip()
+        # Empty audio
+        if len(audio_data) == 0:
+            return ""
+
+    except Exception:
+        return ""
+
+    try:
+
+        result = model.transcribe(
+            audio_file,
+            fp16=False,
+        )
+        print("WHISPER RESULT:")
+        print(result)
+
+        return result["text"].strip()
+
+    except Exception as e:
+
+        print("Whisper Error:", e)
+
+        return ""
 
 
 def listen_and_transcribe(
