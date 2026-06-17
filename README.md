@@ -123,7 +123,7 @@ voice_news_agent/
 ├── voice/
 │   └── voice_news_qa.py
 │
-├── streamlit_app.py
+├
 ├── voice_news_assistant.py
 ├── requirements.txt
 └── README.md
